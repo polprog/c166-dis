@@ -23,9 +23,10 @@
 # with this program. If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 #
 
-$fileIS="c166_is.txt";
-$fileCC="c166_cc.txt";
-$fileSFR="c166_sfr.txt";
+use FindBin qw($RealBin);
+$fileIS="$RealBin/c166_is.txt";
+$fileCC="$RealBin/c166_cc.txt";
+$fileSFR="$RealBin/c166_sfr.txt";
 
 ###############################################################################
 # Read opcodes
@@ -147,7 +148,8 @@ sub cbitaddr {
 
 # cbitoff(QQ)
 sub cbitoff {
-	return	"(INCOMPLETE bitoff)";
+    $tmp=sprintf("%b", ord(pack("B*",shift() )));
+    return sprintf "%s", cregw($tmp);
 }
 
 # cirang2(:..##)
@@ -179,7 +181,8 @@ sub cdata16 {
 
 # cmask8(@@)
 sub cmask8 {
-	return	"(INCOMPLETE mask8)";
+    $tmp=ord((pack("B*",shift() )));
+    return sprintf "\#0b%08b", $tmp;
 }
 
 # ccaddr(MMMM)
@@ -217,7 +220,13 @@ sub ccc {
 ###############################################################################
 # Main
 
-print "#\n# c166-dis.pl disassembler for the c166 family\n#\n#\n";
+if(@ARGV < 1) {
+    printf "Usage: $0 <input file> [start] [offset]\n";
+    exit 1;
+}
+
+print "#\n# c166-dis.pl disassembler for the c166 family\n";
+print "# extended version\n#\n";
 
 readcmd;
 
